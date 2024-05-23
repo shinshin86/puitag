@@ -1,0 +1,22 @@
+{
+  "name": "puitag",
+  "private": true,
+  "version": "0.0.1",
+  "description": "AIイラスト・AIフォト・AIグラビア専用の投稿サイトである『chichi-pui（ちちぷい）』で画像投稿時にタグを一括入力するためのChrome拡張機能です。",
+  "type": "module",
+  "author": "shinshin86 <shinshin86npm@gmail.com> (https://github.com/shinshin86)",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run clean && tsc && vite build",
+    "preview": "vite preview",
+    "fmt": "deno fmt",
+    "clean": "rm -rf ./dist"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^1.0.14",
+    "@types/chrome": "^0.0.203",
+    "typescript": "^4.9.3",
+    "vite": "^2.9.0"
+  }
+}
