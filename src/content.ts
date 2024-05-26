@@ -14,8 +14,44 @@ function insertButton(): void {
   div.style.borderWidth = "0";
   div.style.boxSizing = "border-box";
 
+  const select = document.createElement("select");
+  styleSelectElement(select);
+  loadDropdownOptions(select);
+
   const button = document.createElement("button");
   button.innerHTML = ORIGINAL_BUTTON_TEXT;
+  styleButtonElement(button);
+
+  button.addEventListener("click", () => {
+    const selectedKey = select.value;
+    chrome.storage.sync.get("data", (data) => {
+      const inputStrings = data.data[selectedKey]
+        ? data.data[selectedKey].split("\n")
+        : [];
+      addTags(inputStrings);
+    });
+  });
+
+  div.appendChild(select);
+  div.appendChild(button);
+  targetElement.parentElement?.appendChild(div);
+}
+
+function styleSelectElement(select: HTMLSelectElement): void {
+  select.style.alignItems = "center";
+  select.style.border = "1px solid #eaeae9";
+  select.style.display = "flex";
+  select.style.width = "150px";
+  select.style.height = "40px";
+  select.style.padding = "6px 11px";
+  select.style.font = "#2c2d25";
+  select.style.display = "inline-block";
+  select.style.fontSize = "14px";
+  select.style.fontWeight = "700";
+  select.style.marginRight = "10px";
+}
+
+function styleButtonElement(button: HTMLButtonElement): void {
   button.style.alignItems = "center";
   button.style.border = "1px solid #eaeae9";
   button.style.display = "flex";
@@ -26,17 +62,20 @@ function insertButton(): void {
   button.style.display = "inline-block";
   button.style.fontSize = "14px";
   button.style.fontWeight = "700";
+}
 
-  button.addEventListener("click", () => {
-    chrome.storage.sync.get("inputStrings", (data) => {
-      const inputStrings = data.inputStrings
-        ? data.inputStrings.split("\n")
-        : [];
-      addTags(inputStrings);
-    });
+function loadDropdownOptions(select: HTMLSelectElement): void {
+  chrome.storage.sync.get("data", (result) => {
+    const data = result.data || {};
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        const option = document.createElement("option");
+        option.value = key;
+        option.text = key;
+        select.appendChild(option);
+      }
+    }
   });
-
-  targetElement.parentElement?.appendChild(button);
 }
 
 function addTags(inputStrings: string[]): void {
