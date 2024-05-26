@@ -2,6 +2,7 @@
   "fmt": {
     "include": [
       "src",
+      "options.ts",
       "deno.jsonc",
       "manifest.json",
       "package.json",
