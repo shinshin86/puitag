@@ -1,13 +1,26 @@
 const ORIGINAL_BUTTON_TEXT = "タグを一括入力";
 
-function insertButton(): void {
-  const targetElement = document.querySelector(
+function insertButtonOutsideForm(): void {
+  const tagInputElement = document.querySelector(
     "div.is-flex > input",
   ) as HTMLInputElement;
-  if (!targetElement) {
-    console.error("Target input not found!");
+  if (!tagInputElement) {
+    console.error("Tag input field not found!");
     return;
   }
+
+  // Get the position of the tag input element
+  const tagInputRect = tagInputElement.getBoundingClientRect();
+
+  // Create a container for the new button and select
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.top = `${tagInputRect.top + window.scrollY}px`;
+  container.style.left = `${tagInputRect.right + window.scrollX + 10}px`;
+  container.style.zIndex = "1000";
+  container.style.display = "flex";
+  container.style.marginTop = "10px";
+  container.style.backgroundColor = "white";
 
   const div = document.createElement("div");
   div.style.borderStyle = "solid";
@@ -22,7 +35,8 @@ function insertButton(): void {
   button.innerHTML = ORIGINAL_BUTTON_TEXT;
   styleButtonElement(button);
 
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
     const selectedKey = select.value;
     chrome.storage.sync.get("data", (data) => {
       const inputStrings = data.data[selectedKey]
@@ -34,7 +48,23 @@ function insertButton(): void {
 
   div.appendChild(select);
   div.appendChild(button);
-  targetElement.parentElement?.appendChild(div);
+  container.appendChild(div);
+
+  document.body.appendChild(container);
+
+  // Function to update the position of the container
+  const updatePosition = () => {
+    const tagInputRect = tagInputElement.getBoundingClientRect();
+    container.style.top = `${tagInputRect.top + window.scrollY}px`;
+    container.style.left = `${tagInputRect.right + window.scrollX + 10}px`;
+  };
+
+  // Adjust position on window resize
+  window.addEventListener("resize", updatePosition);
+
+  // Create a MutationObserver to watch for changes to the DOM
+  const observer = new MutationObserver(updatePosition);
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 function styleSelectElement(select: HTMLSelectElement): void {
@@ -129,4 +159,5 @@ function addTags(inputStrings: string[]): void {
   inputField.value = "";
 }
 
-insertButton();
+// Call the function to insert the button outside the form
+insertButtonOutsideForm();
