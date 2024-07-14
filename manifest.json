@@ -1,7 +1,7 @@
 {
   "name": "puitag",
   "description": "AIイラスト・AIフォト・AIグラビア専用の投稿サイトである『chichi-pui（ちちぷい）』で画像投稿時にタグを一括入力するためのChrome拡張機能です。",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "manifest_version": 3,
   "permissions": [
     "storage"
